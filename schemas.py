@@ -12,9 +12,9 @@ Model name is converted to lowercase for the collection name:
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 
-# Example schemas (replace with your own):
+# Example schemas (kept for reference):
 
 class User(BaseModel):
     """
@@ -38,11 +38,25 @@ class Product(BaseModel):
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
 
-# Add your own schemas here:
-# --------------------------------------------------
-
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+# Radiology DICOM study schema
+class Study(BaseModel):
+    """
+    Radiology study metadata
+    Collection name: "study"
+    """
+    patient_id: Optional[str] = Field(None, description="Patient ID from DICOM (0010,0020)")
+    patient_name: Optional[str] = Field(None, description="Patient Name from DICOM (0010,0010)")
+    modality: Optional[str] = Field(None, description="Modality, e.g., CT/MR/CR")
+    study_date: Optional[str] = Field(None, description="Study date (YYYYMMDD)")
+    series_description: Optional[str] = Field(None, description="Series description if present")
+    instance_number: Optional[int] = Field(None, description="Instance number")
+    rows: Optional[int] = Field(None, description="Rows in image")
+    cols: Optional[int] = Field(None, description="Columns in image")
+    bits_allocated: Optional[int] = Field(None, description="Bits allocated")
+    photometric_interpretation: Optional[str] = Field(None, description="Photometric interpretation")
+    window_center: Optional[float] = Field(None, description="Default window center")
+    window_width: Optional[float] = Field(None, description="Default window width")
+    image_path: Optional[str] = Field(None, description="Backend path to rendered PNG for this instance")
+    thumbnail_path: Optional[str] = Field(None, description="Backend path to thumbnail PNG")
+    findings: Optional[str] = Field(None, description="Optional AI/heuristic findings summary")
+    tags: Optional[List[str]] = Field(default_factory=list, description="Optional tags")
